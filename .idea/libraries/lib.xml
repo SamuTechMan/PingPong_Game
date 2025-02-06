@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="lib">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/GamePong/lib/jl1.0.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/GamePong/lib/mp3spi1.9.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/GamePong/lib/tritonus_share-0.3.6.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
