@@ -21,23 +21,23 @@ public class Level1State implements State {
 	private AudioPlayer pong, music;
 
 	public Level1State() {
-		pong = new AudioPlayer("/audio/pong.mp3");
-		music = new AudioPlayer("/audio/theblackframe.mp3");
+		pong = new AudioPlayer("/audio/pong.wav");
+		music = new AudioPlayer("/audio/theblackframe.wav");
 	}
 
 	@Override
 	public void init() {
 		start();
-		music.play();
+		music.loop();
 	}
 
 	public void start() {
 		ball.x = Game.WIDTH / 2 - 5;
-		ball.y = Game.WIDTH / 2 - 5;
+		ball.y = Game.HEIGHT / 2 - 5;
 
 		Random r = new Random();
-		movex = (r.nextInt(5) == 0) ? 5 : -3;
-		movey = (r.nextInt(5) == 0) ? 5 : -3;
+		movex = (r.nextBoolean()) ? 3 : -3;
+		movey = (r.nextBoolean()) ? 3 : -3;
 	}
 
 	@Override
@@ -76,7 +76,7 @@ public class Level1State implements State {
 			start();
 		}
 		if (ball.y + 10 > Game.HEIGHT) {
-			movey = -1;
+			movey = -Math.abs(movey);
 			pong.play();
 		}
 		if (ball.x < 0) {
@@ -84,13 +84,13 @@ public class Level1State implements State {
 			start();
 		}
 		if (ball.y < 0) {
-			movey = 1;
+			movey = Math.abs(movey);
 			pong.play();
 		}
 		if (p1.intersects(ball) || p2.intersects(ball)) {
 			movex *= -1;
 			pong.play();
-	}}
+		}}
 
 	@Override
 	public void render(Graphics g) {

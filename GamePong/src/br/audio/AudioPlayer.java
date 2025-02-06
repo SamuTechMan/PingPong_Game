@@ -1,6 +1,7 @@
 package br.audio;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -14,21 +15,38 @@ public class AudioPlayer {
 	private Clip clip;
 
 	public AudioPlayer(String path) {
-
 		try {
-			AudioInputStream ais = AudioSystem.getAudioInputStream(getClass().getResourceAsStream(path));
+			// Verifique se o recurso existe
+			InputStream inputStream = getClass().getResourceAsStream(path);
+			if (inputStream == null) {
+				throw new RuntimeException("Arquivo não encontrado: " + path);
+			}
+
+			AudioInputStream ais = AudioSystem.getAudioInputStream(inputStream);
 			AudioFormat baseFormat = ais.getFormat();
-			AudioFormat decodeFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED,baseFormat.getSampleRate(),16, baseFormat.getChannels(), baseFormat.getChannels() * 2, baseFormat.getSampleRate(), false);
+
+			// Formato decodificado (PCM)
+			AudioFormat decodeFormat = new AudioFormat(
+					AudioFormat.Encoding.PCM_SIGNED,
+					baseFormat.getSampleRate(),
+					16,
+					baseFormat.getChannels(),
+					baseFormat.getChannels() * 2, // Frame size = 2 bytes * canais
+					baseFormat.getSampleRate(),
+					false
+			);
+
 			AudioInputStream dais = AudioSystem.getAudioInputStream(decodeFormat, ais);
 			clip = AudioSystem.getClip();
 			clip.open(dais);
 
-		} catch (UnsupportedAudioFileException | IOException e) {
-			e.printStackTrace();
-		} catch (LineUnavailableException e) {
-			e.printStackTrace();
-		}
+			// Inicie a reprodução
+			clip.start();
 
+		} catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+			e.printStackTrace();
+			throw new RuntimeException("Erro ao carregar o áudio: " + e.getMessage());
+		}
 	}
 
 	public void stop() {
@@ -44,5 +62,10 @@ public class AudioPlayer {
 		clip.start();
 	}
 
+	public void loop() {
+		if (clip != null) {
+			clip.loop(Clip.LOOP_CONTINUOUSLY);
+		}
+	}
 }
 
